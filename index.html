@@ -121,6 +121,10 @@
             <input id="add-quality-name" type="text" placeholder="Add custom quality" style="min-width:220px" />
             <button class="btn" id="btn-add-quality">Add</button>
           </div>
+          
+          <p id="quality-warning" style="display:none;color:#ffbf00;margin:8px 0 0;">
+            You can only select up to 20 good traits.
+          </p>
         </div>
         <div class="divider"></div>
         <table>
@@ -210,7 +214,8 @@
   <script>
   // ---------- Data ----------
   const STANDARD = 5; // fixed
-
+  const MAX_TRAIT = 20;
+    
   const DEFAULT_QUALITIES = [
     // Appearance & care
     "Attractiveness","Self-care",
@@ -357,9 +362,8 @@
   }
 
   function loadDefaults(){
-    state.qualities = DEFAULT_QUALITIES.map(name=>({name, rating:5}));
-    // start everyone as not present
-    state.flags = DEFAULT_FLAGS.map(([name,penalty])=>({name, penalty, present:false}));
+  state.qualities = DEFAULT_QUALITIES.slice(0, MAX_TRAITS).map(name => ({ name, rating: 5 }));
+  state.flags = DEFAULT_FLAGS.map(([name, penalty]) => ({ name, penalty, present: false }));
   }
 
   function bindProfile(){
@@ -423,14 +427,23 @@
     compute();
 
     // Add quality
-    byId('btn-add-quality').addEventListener('click', ()=>{
-      const name = (byId('add-quality-name').value||'').trim();
-      if(!name) return;
-      state.qualities.push({name, rating:5});
-      byId('add-quality-name').value='';
-      renderQualities();
-      save();
-    });
+  byId('btn-add-quality').addEventListener('click', () => {
+    const name = (byId('add-quality-name').value || '').trim();
+    if(!name) return;
+
+  // 👇 new guard
+    if (state.qualities.length >= MAX_TRAITS) {
+      byId('quality-warning').style.display = 'block';  // show warning
+      return;  // stop adding
+    }
+
+    byId('quality-warning').style.display = 'none';      // hide if previously shown
+    state.qualities.push({ name, rating: 5 });
+    byId('add-quality-name').value = '';
+    renderQualities();
+    save();
+  });
+
 
     // Add flag
     byId('btn-add-flag').addEventListener('click', ()=>{
