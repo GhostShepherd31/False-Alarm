@@ -82,7 +82,6 @@
         <button class="btn ghost" id="btn-new">New</button>
         <button class="btn" id="btn-save">Save</button>
         <button class="btn" id="btn-export">Export JSON</button>
-        <button class="btn" id="btn-import">Import JSON</button>
         <input id="file-import" class="hidden" type="file" accept="application/json" />
       </div>
     </header>
@@ -98,7 +97,6 @@
             <option>Man</option>
             <option>Woman</option>
             <option>Non-binary</option>
-            <option>Prefer not to say</option>
           </select>
         </div>
         <div style="min-width:220px;flex:1">
@@ -108,12 +106,11 @@
             <option>Man</option>
             <option>Woman</option>
             <option>Non-binary</option>
-            <option>Prefer not to say</option>
           </select>
         </div>
         <div style="min-width:260px;flex:2">
           <label class="small">Notes (optional)</label>
-          <input id="profile-notes" type="text" placeholder="Context, date, etc." />
+          <input id="profile-notes" type="text" placeholder="Name, date, etc." />
         </div>
       </div>
     </section>
@@ -124,7 +121,7 @@
         <div class="flex" style="justify-content:space-between;align-items:end">
           <div>
             <h2>2) Qualities</h2>
-            <div class="muted">Standard score is fixed at 5. Choose a partner rating (1–5). Weighted = 5 × rating.</div>
+            <div class="muted">Choose a partner rating (1–5). Weighted = 5 × rating.You can select 20 qualities max.</div>
           </div>
           <div class="flex">
             <input id="add-quality-name" type="text" placeholder="Add custom quality" style="min-width:220px" />
@@ -164,7 +161,7 @@
         <div class="flex" style="justify-content:space-between;align-items:end">
           <div>
             <h2>3) Red Flags</h2>
-            <div class="muted">Toggle present? to apply penalty. You can add your own.</div>
+            <div class="muted">You can delete and add your own red flags.</div>
           </div>
           <div class="flex">
             <input id="add-flag-name" type="text" placeholder="Add custom red flag" style="min-width:220px" />
