@@ -381,41 +381,58 @@
     byId('profile-notes').addEventListener('input', e=> state.profile.notes = e.target.value);
   }
 
-  // Save/Load/Export/Import
-  function save(){
-    const blob = JSON.stringify(state);
-    localStorage.setItem('false-alarm', blob);
-  }
-  function load(){
-    const blob = localStorage.getItem('false-alarm');
-    if(!blob) return false;
-    try{
-      const obj = JSON.parse(blob);
-      Object.assign(state, obj);
-      return true;
-    }catch{ return false; }
-  }
-  function exportJson(){
-    const data = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
-    const url = URL.createObjectURL(data);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'false-alarm-export.json'; a.click();
-    URL.revokeObjectURL(url);
-  }
-  function importJson(file){
-    const reader = new FileReader();
-    reader.onload = () => {
-      try{
-        const obj = JSON.parse(reader.result);
-        Object.assign(state, obj);
-        hydrate();
-        save();
-      }catch{ alert('Invalid JSON'); }
-    };
-    reader.readAsText(file);
-  }
+// Save and Load from localStorage
+function save() {
+  const blob = JSON.stringify(state);
+  localStorage.setItem('false-alarm', blob);
+}
 
-  function hydrate(){
+function load() {
+  const blob = localStorage.getItem('false-alarm');
+  if (!blob) return false;
+  try {
+    const obj = JSON.parse(blob);
+    Object.assign(state, obj);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Export to Excel (no decay)
+function exportExcel() {
+  const wb = XLSX.utils.book_new();
+
+  const profileSheet = XLSX.utils.aoa_to_sheet([
+    ['You are', state.profile.userGender],
+    ['Your date is', state.profile.partnerGender],
+    ['Notes', state.profile.notes]
+  ]);
+  XLSX.utils.book_append_sheet(wb, profileSheet, 'Profile');
+
+  const qualitiesSheet = XLSX.utils.aoa_to_sheet([
+    ['Quality', 'Rating', 'Weight', 'Score'],
+    ...state.qualities.map(q => [q.name, q.rating, STANDARD, q.rating * STANDARD])
+  ]);
+  XLSX.utils.book_append_sheet(wb, qualitiesSheet, 'Qualities');
+
+  const flagsSheet = XLSX.utils.aoa_to_sheet([
+    ['Red Flag', 'Present?', 'Penalty'],
+    ...state.flags.map(f => [f.name, f.present ? 'Yes' : 'No', f.penalty])
+  ]);
+  XLSX.utils.book_append_sheet(wb, flagsSheet, 'Red Flags');
+
+  const resultSheet = XLSX.utils.aoa_to_sheet([
+    ['Total Compatibility', byId('total-compat').textContent],
+    ['Total Penalty', byId('total-penalty').textContent],
+    ['Final Score', byId('final-score').textContent],
+    ['Band', byId('band').textContent]
+  ]);
+  XLSX.utils.book_append_sheet(wb, resultSheet, 'Result');
+
+  XLSX.writeFile(wb, 'false-alarm-scorecard.xlsx');
+}
+ hydrate(){
     // profile
     byId('user-gender').value = state.profile.userGender||'';
     byId('partner-gender').value = state.profile.partnerGender||'';
