@@ -9,16 +9,6 @@
     :root{
       --bg:#0b1020;--card:#121a33;--muted:#9aa3c9;--text:#e9eeff;--accent:#7cf5c6;--accent2:#83a7ff;--danger:#ff6b6b;--ok:#58d07c;--ring: rgba(124,245,198,.35);
     }
-
-    @keyframes flash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.2; }
-    }
-
-    .emoji-siren {
-      animation: flash 1s infinite;
-    }
-    
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,Helvetica,sans-serif;background:radial-gradient(1200px 800px at 10% -10%,#1b2550 0%,transparent 60%),radial-gradient(900px 700px at 110% 10%,#182042 0%,transparent 50%),var(--bg);color:var(--text)}
@@ -81,7 +71,9 @@
       <div class="toolbar">
         <button class="btn ghost" id="btn-new">New</button>
         <button class="btn" id="btn-save">Save</button>
-        <button class="btn" id="btn-export">Export to Excel</button>
+        <button class="btn" id="btn-export">Export JSON</button>
+        <button class="btn" id="btn-import">Import JSON</button>
+        <input id="file-import" class="hidden" type="file" accept="application/json" />
       </div>
     </header>
 
@@ -122,7 +114,7 @@
         <div class="flex" style="justify-content:space-between;align-items:end">
           <div>
             <h2>2) Qualities</h2>
-            <div class="muted">Standard score is fixed at 5. Choose a partner rating (1–5). Weighted = 5 × rating. Max of 20 qualities can be selected.</div>
+            <div class="muted">Standard score is fixed at 5. Choose a partner rating (1–5). Weighted = 5 × rating.</div>
           </div>
           <div class="flex">
             <input id="add-quality-name" type="text" placeholder="Add custom quality" style="min-width:220px" />
@@ -162,7 +154,7 @@
         <div class="flex" style="justify-content:space-between;align-items:end">
           <div>
             <h2>3) Red Flags</h2>
-            <div class="muted">You can remove and add your own Red Flags.</div>
+            <div class="muted">Toggle present? to apply penalty. You can add your own.</div>
           </div>
           <div class="flex">
             <input id="add-flag-name" type="text" placeholder="Add custom red flag" style="min-width:220px" />
@@ -381,59 +373,41 @@
     byId('profile-notes').addEventListener('input', e=> state.profile.notes = e.target.value);
   }
 
-// Save and Load from localStorage
-function save() {
-  const blob = JSON.stringify(state);
-  localStorage.setItem('false-alarm', blob);
-}
-
-function load() {
-  const blob = localStorage.getItem('false-alarm');
-  if (!blob) return false;
-  try {
-    const obj = JSON.parse(blob);
-    Object.assign(state, obj);
-    return true;
-  } catch {
-    return false;
+  // Save/Load/Export/Import
+  function save(){
+    const blob = JSON.stringify(state);
+    localStorage.setItem('false-alarm', blob);
   }
-}
+  function load(){
+    const blob = localStorage.getItem('false-alarm');
+    if(!blob) return false;
+    try{
+      const obj = JSON.parse(blob);
+      Object.assign(state, obj);
+      return true;
+    }catch{ return false; }
+  }
+  function exportJson(){
+    const data = new Blob([JSON.stringify(state,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'false-alarm-export.json'; a.click();
+    URL.revokeObjectURL(url);
+  }
+  function importJson(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const obj = JSON.parse(reader.result);
+        Object.assign(state, obj);
+        hydrate();
+        save();
+      }catch{ alert('Invalid JSON'); }
+    };
+    reader.readAsText(file);
+  }
 
-// Export to Excel (no decay)
-function exportExcel() {
-  const wb = XLSX.utils.book_new();
-
-  const profileSheet = XLSX.utils.aoa_to_sheet([
-    ['You are', state.profile.userGender],
-    ['Your date is', state.profile.partnerGender],
-    ['Notes', state.profile.notes]
-  ]);
-  XLSX.utils.book_append_sheet(wb, profileSheet, 'Profile');
-
-  const qualitiesSheet = XLSX.utils.aoa_to_sheet([
-    ['Quality', 'Standard', 'Partner Rating', 'Weighted'],
-    ...state.qualities.map(q => [q.name, 5, q.rating, 5 * q.rating])
-  ]);
-  XLSX.utils.book_append_sheet(wb, qualitiesSheet, 'Qualities');
-
-  const flagsSheet = XLSX.utils.aoa_to_sheet([
-    ['Red Flag', 'Present?', 'Penalty'],
-    ...state.flags.map(f => [f.name, f.present ? 'Yes' : 'No', f.penalty])
-  ]);
-  XLSX.utils.book_append_sheet(wb, flagsSheet, 'Red Flags');
-
-  const resultSheet = XLSX.utils.aoa_to_sheet([
-    ['Total Compatibility', byId('total-compat').textContent],
-    ['Total Penalty', byId('total-penalty').textContent],
-    ['Final Score', byId('final-score').textContent],
-    ['Band', byId('band').textContent]
-  ]);
-  XLSX.utils.book_append_sheet(wb, resultSheet, 'Result');
-
-  XLSX.writeFile(wb, 'false-alarm-scorecard.xlsx');
-}
-    
- hydrate(){
+  function hydrate(){
     // profile
     byId('user-gender').value = state.profile.userGender||'';
     byId('partner-gender').value = state.profile.partnerGender||'';
@@ -498,7 +472,7 @@ function exportExcel() {
     byId('btn-save').addEventListener('click', ()=>{ save(); alert('Saved to this browser.'); });
 
     // Export
-    byId('btn-export').addEventListener('click', exportExcel);
+    byId('btn-export').addEventListener('click', exportJson);
 
     // Import
     byId('btn-import').addEventListener('click', ()=> byId('file-import').click());
