@@ -300,12 +300,66 @@
 
   <!-- Scripts -->
   <script>
-    // Your full JavaScript logic goes here — including state, rendering, compute, radar chart, Excel export, and event bindings.
-    // I’ll deliver this next so you have the complete file.
-  </script>
+  document.addEventListener('DOMContentLoaded', () => {
+    bindProfile();
+    if (!load()) loadDefaults();
+    hydrate();
+    compute();
+
+  // Add Quality
+  byId('btn-add-quality').addEventListener('click', () => {
+    const name = (byId('add-quality-name').value || '').trim();
+    if (!name) return;
+    if (state.qualities.length >= MAX_TRAITS) {
+      byId('quality-warning').style.display = 'block';
+      return;
+    }
+    byId('quality-warning').style.display = 'none';
+    state.qualities.push({ name, rating: 5, weight: 5 });
+    byId('add-quality-name').value = '';
+    renderQualities();
+    save();
+  });
+
+  // Add Flag
+  byId('btn-add-flag').addEventListener('click', () => {
+    const name = (byId('add-flag-name').value || '').trim();
+    let pen = Number(byId('add-flag-pen').value || '');
+    let decay = Number(byId('add-flag-decay').value || '1');
+    if (!name) return;
+    if (!pen || isNaN(pen)) pen = -100;
+    if (pen > 0) pen = -Math.abs(pen);
+    if (isNaN(decay) || decay < 0 || decay > 1) decay = 1;
+    state.flags.push({ name, penalty: pen, decay, present: false });
+    byId('add-flag-name').value = '';
+    byId('add-flag-pen').value = '';
+    byId('add-flag-decay').value = '';
+    renderFlags();
+    save();
+  });
+
+  // Export to Excel
+  byId('btn-export').addEventListener('click', exportExcel);
+
+    // New Scorecard
+  byId('btn-new').addEventListener('click', () => {
+    if (!confirm('Start a new scorecard? This clears current form (saved copy stays in browser).')) return;
+    state.profile = { userGender: '', partnerGender: '', notes: '', scenario: 'default' };
+    loadDefaults();
+    hydrate();
+    compute();
+  });
+
+  // Save
+  byId('btn-save').addEventListener('click', () => {
+    save();
+    alert('Saved to this browser.');
+  });
+});
+</script>
 </body>
 </html>
-<script>
+
 const MAX_TRAITS = 20;
 const state = {
   profile: { userGender: '', partnerGender: '', notes: '', scenario: 'default' },
