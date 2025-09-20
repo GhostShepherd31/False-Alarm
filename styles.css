@@ -1,0 +1,24 @@
+.flex {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn.danger {
+  background: #2b1930;
+  border: 1px solid #5a2b53;
+}
+
+.meter {
+  height: 14px;
+  background: #0f1836;
+  border: 1px solid #2a365f;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.meter > div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--danger), #ffb86b, #fff08b, #a6ff8f);
+  width: 0%;
+}
