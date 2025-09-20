@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>False Alarm — Compatibility Scoring</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title">
+        <div class="emoji-siren" aria-hidden="true">🚨</div>
+        <div>
+          <h1>False Alarm</h1>
+          <div class="sub">Compatibility scoring template.</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="btn ghost" id="btn-new">New</button>
+        <button class="btn" id="btn-save">Save</button>
+        <button class="btn primary" id="btn-export">Export to Excel</button>
+      </div>
+    </header>
+
+    <!-- STEP 1: Profile -->
+    <section class="card" id="step-profile">
+      <h2>1) Profile</h2>
+      <div class="flex">
+        <div style="min-width:220px;flex:1">
+          <label class="small">You are</label>
+          <select id="user-gender">
+            <option value="">Select…</option>
+            <option>Man</option>
+            <option>Woman</option>
+            <option>Non-binary</option>
+          </select>
+        </div>
+        <div style="min-width:220px;flex:1">
+          <label class="small">Your date is</label>
+          <select id="partner-gender">
+            <option value="">Select…</option>
+            <option>Man</option>
+            <option>Woman</option>
+            <option>Non-binary</option>
+          </select>
+        </div>
+        <div style="min-width:260px;flex:2">
+          <label class="small">Notes (optional)</label>
+          <input id="profile-notes" type="text" placeholder="Name, date, etc." />
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: Qualities -->
+    <section class="card" id="step-qualities">
+      <div class="flex" style="justify-content:space-between;align-items:end">
+        <div>
+          <h2>2) Qualities</h2>
+          <div class="muted">Choose a partner rating (1–5). Weighted = 5 × rating. Max 20 traits.</div>
+        </div>
+        <div class="flex">
+          <input id="add-quality-name" type="text" placeholder="Add custom quality" style="min-width:220px" />
+          <button class="btn" id="btn-add-quality">Add</button>
+        </div>
+      </div>
+      <p id="quality-warning" style="display:none;color:#ffbf00;margin:8px 0 0;">
+        You can only select up to 20 good traits.
+      </p>
+      <div class="divider"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Quality</th>
+            <th style="width:120px">Standard</th>
+            <th style="width:180px">Partner Rating (1–5)</th>
+            <th style="width:140px">Weighted</th>
+            <th style="width:120px">Remove</th>
+          </tr>
+        </thead>
+        <tbody id="qualities-body"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align:right;padding-right:10px;color:var(--muted)">Total Compatibility</td>
+            <td id="total-compat" style="font-weight:800">0</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+  </div>
+
+  <script src="lib/xlsx.full.min.js"></script>
+  <script src="state.js"></script>
+  <script src="logic.js"></script>
+  <script src="export.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
