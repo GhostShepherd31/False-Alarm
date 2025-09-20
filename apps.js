@@ -5,15 +5,17 @@ document.addEventListener('DOMContentLoaded', () => {
     save();
   }
 
-  // Bind profile inputs
+  // Profile bindings
   byId('user-gender').addEventListener('change', e => {
     state.profile.userGender = e.target.value;
     save();
   });
+
   byId('partner-gender').addEventListener('change', e => {
     state.profile.partnerGender = e.target.value;
     save();
   });
+
   byId('profile-notes').addEventListener('input', e => {
     state.profile.notes = e.target.value;
     save();
@@ -48,9 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
     alert('Saved to this browser.');
   });
 
-  // Export to Excel
+  // Export
   byId('btn-export').addEventListener('click', exportExcel);
 
   // Initial render
   renderQualities();
+  compute();
 });
