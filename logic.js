@@ -37,23 +37,4 @@ function bindQualityEvents() {
   document.querySelectorAll('button[data-remove-quality]').forEach(btn => {
     btn.addEventListener('click', e => {
       const idx = Number(e.target.getAttribute('data-remove-quality'));
-      state.qualities.splice(idx, 1);
-      renderQualities();
-    });
-  });
-}
-
-function save() {
-  localStorage.setItem('false-alarm', JSON.stringify(state));
-}
-
-function load() {
-  const blob = localStorage.getItem('false-alarm');
-  if (!blob) return false;
-  try {
-    Object.assign(state, JSON.parse(blob));
-    return true;
-  } catch {
-    return false;
-  }
-}
+      state.qualities.splice(idx,
