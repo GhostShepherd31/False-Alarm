@@ -411,8 +411,8 @@ function exportExcel() {
   XLSX.utils.book_append_sheet(wb, profileSheet, 'Profile');
 
   const qualitiesSheet = XLSX.utils.aoa_to_sheet([
-    ['Quality', 'Rating', 'Weight', 'Score'],
-    ...state.qualities.map(q => [q.name, q.rating, STANDARD, q.rating * STANDARD])
+    ['Quality', 'Standard', 'Partner Rating', 'Weighted'],
+    ...state.qualities.map(q => [q.name, 5, q.rating, 5 * q.rating])
   ]);
   XLSX.utils.book_append_sheet(wb, qualitiesSheet, 'Qualities');
 
@@ -432,6 +432,7 @@ function exportExcel() {
 
   XLSX.writeFile(wb, 'false-alarm-scorecard.xlsx');
 }
+    
  hydrate(){
     // profile
     byId('user-gender').value = state.profile.userGender||'';
@@ -497,7 +498,7 @@ function exportExcel() {
     byId('btn-save').addEventListener('click', ()=>{ save(); alert('Saved to this browser.'); });
 
     // Export
-    byId('btn-export').addEventListener('click', exportJson);
+    byId('btn-export').addEventListener('click', exportExcel);
 
     // Import
     byId('btn-import').addEventListener('click', ()=> byId('file-import').click());
