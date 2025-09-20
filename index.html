@@ -6,33 +6,57 @@
   <title>False Alarm — Compatibility Scoring</title>
   <meta name="description" content="A lightweight, client-side compatibility scoring app you can host on GitHub Pages." />
   <style>
-    root{
+    :root{
       --bg:#0b1020;--card:#121a33;--muted:#9aa3c9;--text:#e9eeff;--accent:#7cf5c6;--accent2:#83a7ff;--danger:#ff6b6b;--ok:#58d07c;--ring: rgba(124,245,198,.35);
     }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,Helvetica,sans-serif;background:radial-gradient(1200px 800px at 10% -10%,#1b2550 0%,transparent 60%),radial-gradient(900px 700px at 110% 10%,#182042 0%,transparent 50%),var(--bg);color:var(--text)}
+    a{color:var(--accent2)}
+    .container{max-width:1100px;margin:24px auto;padding:0 16px}
+    header{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .title{display:flex;gap:12px;align-items:center}
+    .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 30px rgba(127,229,201,.35)}
+    h1{font-size:clamp(22px,3.5vw,32px);margin:0;font-weight:800;letter-spacing:.2px}
+    .sub{color:var(--muted);font-size:.95rem}
 
-    @keyframes flash {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.2; }
-    }
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{background:#1c2646;color:var(--text);border:1px solid #26305a;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer}
+    .btn:hover{border-color:#33407a}
+    .btn.primary{background:linear-gradient(135deg,#1f8859,#246bff);border:none;box-shadow:0 8px 30px rgba(124,245,198,.25)}
+    .btn.ghost{background:transparent;border:1px dashed #37406f}
+    .btn.danger{background:#2b1930;border:1px solid #5a2b53}
 
-    .emoji-siren {
-      animation: flash 1s infinite;
-    }
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; font-family: Inter, system-ui, Segoe UI, Roboto, Arial, Helvetica, sans-serif; background: radial-gradient(1200px 800px at 10% -10%, #1b2550 0%, transparent 60%), radial-gradient(900px 700px at 110% 10%, #182042 0%, transparent 50%), var(--bg); color: var(--text); }
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.0));border:1px solid #2a345f;border-radius:18px;padding:16px 14px}
+    .card h2{margin:0 0 8px 0;font-size:1.1rem}
 
-    .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
-    header { display: flex; gap: 14px; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-    .title { display: flex; gap: 12px; align-items: center; }
-    h1 { font-size: clamp(22px, 3.5vw, 32px); margin: 0; font-weight: 800; letter-spacing: .2px; }
-    .sub { color: var(--muted); font-size: .95rem; }
+    table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    thead th{font-size:.85rem;color:var(--muted);font-weight:600;text-align:left;padding:0 8px}
+    tbody td{background:#121936;border:1px solid #27305a;padding:8px;border-left:none;border-right:none;vertical-align:middle}
+    tbody tr td:first-child{border-left:1px solid #27305a;border-radius:12px 0 0 12px}
+    tbody tr td:last-child{border-right:1px solid #27305a;border-radius:0 12px 12px 0}
 
-    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
-    .btn { background: #1c2646; color: var(--text); border: 1px solid #26305a; padding: 10px 14px; border-radius: 12px; font-weight: 600; cursor: pointer; }
-    .btn:hover { border-color: #33407a; }
-    .btn.primary { background: linear-gradient(135deg, #1f8859, #246bff); border: none; box-shadow: 0 8px 30px rgba(124,245,198,.25); }
-    .btn.ghost { background: transparent; border: 1px dashed #37406f; }
+    input[type="text"], input[type="number"], select{width:100%;background:#0e1530;color:var(--text);border:1px solid #2b3561;border-radius:10px;padding:9px}
+    input[type="checkbox"]{width:18px;height:18px}
+    label.small{color:var(--muted);font-size:.85rem}
+
+    .score{font-size:42px;font-weight:900;letter-spacing:1px;margin:8px 0}
+    .score small{font-size:14px;color:var(--muted);font-weight:600}
+
+    .meter{height:14px;background:#0f1836;border:1px solid #2a365f;border-radius:10px;overflow:hidden}
+    .meter>div{height:100%;background:linear-gradient(90deg,var(--danger),#ffb86b,#fff08b,#a6ff8f);width:0%}
+
+    .row-tools{display:flex;gap:6px;align-items:center}
+    .pill{font-size:.78rem;padding:4px 8px;border-radius:999px;border:1px solid #2a376b;color:var(--muted)}
+    .muted{color:var(--muted)}
+    .flex{display:flex;gap:10px;flex-wrap:wrap}
+    .hidden{display:none}
+    .divider{height:1px;background:#26305a;margin:12px 0}
+    .tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid #2a376b;border-radius:999px}
+    .tag .dot{width:8px;height:8px;border-radius:999px;background:var(--accent)}
   </style>
 </head>
 <body>
@@ -40,15 +64,16 @@
     <header>
       <div class="title">
         <div class="emoji-siren" aria-hidden="true">🚨</div>
-        <div>
+      <div>
           <h1>False Alarm</h1>
           <div class="sub">Compatibility scoring template.</div>
-        </div>
       </div>
       <div class="toolbar">
         <button class="btn ghost" id="btn-new">New</button>
         <button class="btn" id="btn-save">Save</button>
-        <button class="btn primary" id="btn-export">Export to Excel</button>
+        <button class="btn" id="btn-export">Export JSON</button>
+        <button class="btn" id="btn-import">Import JSON</button>
+        <input id="file-import" class="hidden" type="file" accept="application/json" />
       </div>
     </header>
 
