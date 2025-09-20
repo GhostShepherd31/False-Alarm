@@ -1,12 +1,90 @@
+:root {
+  --bg: #0b1020;
+  --card: #121a33;
+  --muted: #9aa3c9;
+  --text: #e9eeff;
+  --accent: #7cf5c6;
+  --accent2: #83a7ff;
+  --danger: #ff6b6b;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
 .flex {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
+.btn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #1f8859, #246bff);
+  color: white;
+  border: none;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px dashed #37406f;
+  color: var(--text);
+}
+
 .btn.danger {
   background: #2b1930;
   border: 1px solid #5a2b53;
+  color: var(--text);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.divider {
+  height: 1px;
+  background: #26305a;
+  margin: 12px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+thead th {
+  text-align: left;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+tbody td {
+  background: #121936;
+  padding: 8px;
+  border-radius: 6px;
 }
 
 .meter {
@@ -22,3 +100,4 @@
   background: linear-gradient(90deg, var(--danger), #ffb86b, #fff08b, #a6ff8f);
   width: 0%;
 }
+
