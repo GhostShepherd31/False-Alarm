@@ -456,14 +456,15 @@
       compute();
     });
 
-    // Save
-    byId('btn-save').addEventListener('click', ()=>{ save(); alert('Saved to this browser.'); });
-
-    // Export
-    byId('btn-export').addEventListener('click', exportExcel);
-
-    });
+<script>
+  // Save
+  byId('btn-save').addEventListener('click', () => {
+    save();
+    alert('Saved to this browser.');
   });
-  </script>
+
+  // Export
+  byId('btn-export').addEventListener('click', exportExcel);
+</script>
 </body>
 </html>
